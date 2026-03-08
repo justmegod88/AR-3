@@ -84,8 +84,10 @@
   .lensFrame{position:relative;width:min(100%,560px);display:flex;justify-content:center;align-items:center}
   .lensImageWrap{position:relative;width:420px;height:420px;display:grid;place-items:center}
   .lensImage{width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 18px 34px rgba(0,94,184,.10))}
-  .ozRing,.pupilOverlay,.mismatchHighlight{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;transition:width .35s ease,height .35s ease,opacity .2s ease, background .35s ease}
-  .ozRing{border:2px solid rgba(255,255,255,.88);width:0;height:0;box-shadow:0 0 0 1px rgba(81,120,170,.28)}
+  .pupilOverlay,.mismatchHighlight{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;
+    transition:width .35s ease,height .35s ease,opacity .2s ease, background .35s ease;
+  }
   .pupilOverlay{border:3px dashed rgba(21,48,75,.86);background:rgba(255,255,255,.02);width:0;height:0}
   .mismatchHighlight{pointer-events:none;opacity:0}
   .lensLegend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:4px}
@@ -215,7 +217,6 @@
             <div class="lensImageWrap">
               <img class="lensImage" id="lensImage" alt="광학부 이미지" src="">
               <div class="mismatchHighlight" id="mismatchHighlight"></div>
-              <div class="ozRing" id="ozRing"></div>
               <div class="pupilOverlay" id="pupilOverlay"></div>
             </div>
           </div>
@@ -299,7 +300,6 @@
   const designRadios = document.querySelectorAll('input[name="design"]');
   const pupilEl = document.getElementById('pupil');
   const pupilText = document.getElementById('pupilText');
-  const ozRing = document.getElementById('ozRing');
   const pupilOverlay = document.getElementById('pupilOverlay');
   const mismatchHighlight = document.getElementById('mismatchHighlight');
   const showBothBtn = document.getElementById('showBothBtn');
@@ -356,11 +356,19 @@
     return standardOpticZone;
   }
 
-  function makeLensSvg(ozMM) {
-    const ozPX = mmToLensPx(ozMM);
-    const outerR = Math.round(ozPX / 2);
+  function makeLensSvg(ozMM, overlayModeValue) {
+    const outerR = Math.round(mmToLensPx(ozMM) / 2);
     const midR = Math.round(outerR * 0.73);
     const nearR = Math.round(outerR * 0.41);
+
+    const showOptic = overlayModeValue === 'both' || overlayModeValue === 'optic';
+    const farOpacity = showOptic ? '0.98' : '0';
+    const midOpacity = showOptic ? '0.98' : '0';
+    const nearOpacity = showOptic ? '0.98' : '0';
+    const lineOpacityOuter = showOptic ? '0.86' : '0';
+    const lineOpacityMid = showOptic ? '0.82' : '0';
+    const lineOpacityNear = showOptic ? '0.78' : '0';
+
     const labelYFar = 210 - outerR + 30;
     const labelYMid = 210 - midR + 24;
     const labelYNear = 210 - nearR + 26;
@@ -411,19 +419,19 @@
     <path d="M196 52 C202 92 208 126 196 162 C184 124 188 92 196 52Z" fill="#ffffff" fill-opacity="0.38" filter="url(#softGlow)"/>
   </g>
 
-  <circle cx="210" cy="210" r="${outerR}" fill="url(#farZone)" opacity="0.98"/>
-  <circle cx="210" cy="210" r="${midR}" fill="url(#midZone)" opacity="0.98"/>
-  <circle cx="210" cy="210" r="${nearR}" fill="url(#nearZone)" opacity="0.98"/>
+  <circle cx="210" cy="210" r="${outerR}" fill="url(#farZone)" opacity="${farOpacity}"/>
+  <circle cx="210" cy="210" r="${midR}" fill="url(#midZone)" opacity="${midOpacity}"/>
+  <circle cx="210" cy="210" r="${nearR}" fill="url(#nearZone)" opacity="${nearOpacity}"/>
 
-  <circle cx="210" cy="210" r="${outerR}" fill="none" stroke="#ffffff" stroke-opacity="0.86" stroke-width="2.6"/>
-  <circle cx="210" cy="210" r="${midR}" fill="none" stroke="#ffffff" stroke-opacity="0.82" stroke-width="2.4"/>
-  <circle cx="210" cy="210" r="${nearR}" fill="none" stroke="#ffffff" stroke-opacity="0.78" stroke-width="2.4"/>
+  <circle cx="210" cy="210" r="${outerR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityOuter}" stroke-width="2.6"/>
+  <circle cx="210" cy="210" r="${midR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityMid}" stroke-width="2.4"/>
+  <circle cx="210" cy="210" r="${nearR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityNear}" stroke-width="2.4"/>
 
   <circle cx="210" cy="210" r="168" fill="none" stroke="#cddbef" stroke-width="1.4"/>
 
-  <text x="210" y="${labelYFar}" text-anchor="middle" font-size="24" font-weight="700" fill="#3a77d6" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">원</text>
-  <text x="210" y="${labelYMid}" text-anchor="middle" font-size="24" font-weight="700" fill="#aa9729" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">중</text>
-  <text x="210" y="${labelYNear}" text-anchor="middle" font-size="24" font-weight="700" fill="#d07752" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">근</text>
+  ${showOptic ? `<text x="210" y="${labelYFar}" text-anchor="middle" font-size="24" font-weight="700" fill="#3a77d6" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">원</text>` : ''}
+  ${showOptic ? `<text x="210" y="${labelYMid}" text-anchor="middle" font-size="24" font-weight="700" fill="#aa9729" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">중</text>` : ''}
+  ${showOptic ? `<text x="210" y="${labelYNear}" text-anchor="middle" font-size="24" font-weight="700" fill="#d07752" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">근</text>` : ''}
 </svg>
     `.trim();
 
@@ -436,8 +444,6 @@
 
     pupilOverlay.style.width = `${pupilPX}px`;
     pupilOverlay.style.height = `${pupilPX}px`;
-    ozRing.style.width = `${ozPX}px`;
-    ozRing.style.height = `${ozPX}px`;
 
     const diff = pupilPX - ozPX;
     const absDiff = Math.abs(diff);
@@ -459,17 +465,15 @@
   function applyOverlayVisibility() {
     if(overlayMode === 'both') {
       pupilOverlay.style.opacity = '1';
-      ozRing.style.opacity = '1';
       mismatchHighlight.style.opacity = mismatchHighlight.style.background && mismatchHighlight.style.background !== 'none' ? '1' : '0';
     } else if(overlayMode === 'pupil') {
       pupilOverlay.style.opacity = '1';
-      ozRing.style.opacity = '0';
       mismatchHighlight.style.opacity = '0';
     } else {
       pupilOverlay.style.opacity = '0';
-      ozRing.style.opacity = '1';
       mismatchHighlight.style.opacity = '0';
     }
+
     showBothBtn.classList.toggle('active', overlayMode === 'both');
     showPupilBtn.classList.toggle('active', overlayMode === 'pupil');
     showOpticBtn.classList.toggle('active', overlayMode === 'optic');
@@ -532,7 +536,7 @@
     pupilText.textContent = `${pupilMM.toFixed(1)} mm`;
 
     const ozMM = calcOpticZoneMM(mode, pupilMM);
-    lensImage.src = makeLensSvg(ozMM);
+    lensImage.src = makeLensSvg(ozMM, overlayMode);
 
     applyOverlays(pupilMM, ozMM);
     applyOverlayVisibility();
@@ -545,8 +549,8 @@
   window.addEventListener('resize', updateAll);
 
   showBothBtn.addEventListener('click', () => { overlayMode = 'both'; updateAll(); });
-  showPupilBtn.addEventListener('click', () => { overlayMode = 'pupil'; applyOverlayVisibility(); });
-  showOpticBtn.addEventListener('click', () => { overlayMode = 'optic'; applyOverlayVisibility(); });
+  showPupilBtn.addEventListener('click', () => { overlayMode = 'pupil'; updateAll(); });
+  showOpticBtn.addEventListener('click', () => { overlayMode = 'optic'; updateAll(); });
 
   let stream = null;
   async function startCamera() {
@@ -566,6 +570,7 @@
       alert('카메라 권한을 허용하면 실시간 시뮬레이션을 볼 수 있습니다.');
     }
   }
+
   function stopCamera() {
     if(!stream) return;
     stream.getTracks().forEach(t => t.stop());
@@ -579,6 +584,7 @@
     camBtn.textContent = '카메라 ON';
     camBtn.classList.remove('primary');
   }
+
   camBtn.addEventListener('click', async () => {
     if(stream) stopCamera();
     else await startCamera();
