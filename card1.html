@@ -25,7 +25,7 @@
     padding:28px 18px 60px;
   }
   .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-  .hero,.card,.visionCard,.compareCard,.placeholderCard,.pageFootnote,.accordionCard{
+  .hero,.card,.visionCard,.placeholderCard,.pageFootnote,.accordionCard{
     width:100%;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);
   }
   .hero{padding:22px 24px;overflow:hidden;position:relative}
@@ -50,7 +50,7 @@
 
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   .card{padding:22px}
-  .card h3,.visionCard h3,.compareCard h3,.placeholderCard h3{
+  .card h3,.visionCard h3,.placeholderCard h3{
     margin:0 0 12px;font-size:22px;letter-spacing:-.03em;line-height:1.3;
   }
   .guide{margin:0 0 18px;color:var(--sub);font-size:15px;font-weight:700;line-height:1.62}
@@ -117,7 +117,6 @@
   .tag{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#eaf3ff;border:1px solid #cfe1f8;color:#195aa8;font-size:12px;font-weight:900}
 
   .sideGrid{display:grid;grid-template-columns:1fr;gap:18px}
-  .compareCard,.placeholderCard{padding:22px}
   .compareRow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
   .compareBox{border-radius:18px;padding:16px;border:1px solid #e0e8f3;background:#fbfdff}
   .compareBox.good{background:linear-gradient(180deg,#f3f9ff 0%, #fbfdff 100%);border-color:#cfe1f8}
@@ -148,7 +147,6 @@
   .accordionCard[open] .accordionSummary::after{transform:rotate(180deg)}
   .accordionBody{padding:0 24px 22px}
 
-  .placeholderBox{margin-top:16px;border-radius:20px;min-height:220px;border:1.5px dashed #b8cbe3;background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.2) 18%, rgba(255,255,255,0) 30%), linear-gradient(180deg,#eef5ff 0%, #f8fbff 100%);display:grid;place-items:center;text-align:center;padding:20px;color:#6c8297;font-size:15px;line-height:1.7}
   .pageFootnote{padding:12px 16px;color:var(--sub);font-weight:800;font-size:13px;line-height:1.5;box-shadow:none}
 
   @media (max-width:980px){
@@ -159,12 +157,12 @@
   }
   @media (max-width:560px){
     body{padding:14px 12px 40px}
-    .hero,.card,.visionCard,.compareCard,.placeholderCard,.accordionCard{border-radius:22px}
-    .card,.visionCard,.compareCard,.placeholderCard,.hero{padding:18px}
+    .hero,.card,.visionCard,.placeholderCard,.accordionCard{border-radius:22px}
+    .card,.visionCard,.placeholderCard,.hero{padding:18px}
     .accordionSummary{padding:18px;font-size:18px}
     .accordionBody{padding:0 18px 18px}
     .heroTitle{font-size:clamp(15px,5.6vw,19px);max-width:100%;line-height:1.34}
-    .card h3,.visionCard h3,.compareCard h3,.placeholderCard h3{font-size:18px}
+    .card h3,.visionCard h3,.placeholderCard h3{font-size:18px}
     .guide{font-size:13px;line-height:1.52}
     .eye{width:190px;height:190px}
     .label,.value{font-size:16px}
@@ -387,9 +385,12 @@
 
   function makeLensSvg(ozMM, overlayModeValue) {
     const opticDiameter = mmToLensPx(ozMM);
-    const outerR = Math.round(opticDiameter / 2);
-    const midR = Math.round(outerR * 0.72);
-    const nearR = Math.round(outerR * 0.43);
+    const opticOuterR = Math.round(opticDiameter / 2);
+
+    // 광학부 전체(원+중+근)의 바깥 끝 = 파란색 끝 = opticOuterR
+    const farR = opticOuterR;
+    const midR = Math.round(opticOuterR * 0.72);
+    const nearR = Math.round(opticOuterR * 0.43);
 
     const showOptic = overlayModeValue === 'both' || overlayModeValue === 'optic';
     const farOpacity = showOptic ? '1' : '0';
@@ -399,7 +400,7 @@
     const lineOpacityMid = showOptic ? '0.82' : '0';
     const lineOpacityNear = showOptic ? '0.78' : '0';
 
-    const labelYFar = 210 - outerR + 30;
+    const labelYFar = 210 - farR + 30;
     const labelYMid = 210 - midR + 24;
     const labelYNear = 210 - nearR + 24;
 
@@ -449,11 +450,11 @@
     <path d="M196 52 C202 92 208 126 196 162 C184 124 188 92 196 52Z" fill="#ffffff" fill-opacity="0.38" filter="url(#softGlow)"/>
   </g>
 
-  <circle cx="210" cy="210" r="${outerR}" fill="url(#farZone)" opacity="${farOpacity}"/>
+  <circle cx="210" cy="210" r="${farR}" fill="url(#farZone)" opacity="${farOpacity}"/>
   <circle cx="210" cy="210" r="${midR}" fill="url(#midZone)" opacity="${midOpacity}"/>
   <circle cx="210" cy="210" r="${nearR}" fill="url(#nearZone)" opacity="${nearOpacity}"/>
 
-  <circle cx="210" cy="210" r="${outerR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityOuter}" stroke-width="2.8"/>
+  <circle cx="210" cy="210" r="${farR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityOuter}" stroke-width="2.8"/>
   <circle cx="210" cy="210" r="${midR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityMid}" stroke-width="2.4"/>
   <circle cx="210" cy="210" r="${nearR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityNear}" stroke-width="2.4"/>
 
@@ -528,7 +529,7 @@
     if(mode === '183') {
       setExplain(
         [{label:'광학부 사이즈≈동공사이즈'}, {label:'전반적 선명'}],
-        '도수와 가입도가 고려된 183가지 동공 사이즈별 광학부로 적용으로 모든 거리에서 선명한 시야를 제공합니다.'
+        '도수와 가입도가 고려된 183가지 동공 사이즈별 광학부 적용으로 모든 거리에서 선명한 시야를 제공합니다.'
       );
       return;
     }
