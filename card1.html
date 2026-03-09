@@ -384,13 +384,10 @@
   }
 
   function makeLensSvg(ozMM, overlayModeValue) {
-    const opticDiameter = mmToLensPx(ozMM);
-    const opticOuterR = Math.round(opticDiameter / 2);
-
-    // 광학부 전체(원+중+근)의 바깥 끝 = 파란색 끝 = opticOuterR
-    const farR = opticOuterR;
-    const midR = Math.round(opticOuterR * 0.72);
-    const nearR = Math.round(opticOuterR * 0.43);
+    const opticDiameterPx = mmToLensPx(ozMM);
+    const farR = Math.round(opticDiameterPx / 2);   // 광학부 전체 외곽 = 파란색 끝
+    const midR = Math.round(farR * 0.72);
+    const nearR = Math.round(farR * 0.43);
 
     const showOptic = overlayModeValue === 'both' || overlayModeValue === 'optic';
     const farOpacity = showOptic ? '1' : '0';
