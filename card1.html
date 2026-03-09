@@ -77,11 +77,115 @@
   .radio{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .radio label{display:flex;align-items:center;gap:6px;font-weight:900;color:var(--text);white-space:nowrap;font-size:14px}
 
-  .lensWrap{display:flex;flex-direction:column;gap:14px;align-items:center}
-  .lensStage{width:100%;display:flex;justify-content:center;align-items:center;min-height:300px}
-  .lensFrame{position:relative;width:min(100%,560px);display:flex;justify-content:center;align-items:center}
-  .lensImageWrap{position:relative;width:420px;height:420px;display:grid;place-items:center}
-  .lensImage{width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 18px 34px rgba(0,94,184,.10))}
+  .simLayout{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:18px;
+    align-items:start;
+  }
+  .realEyeCard,.opticCard{
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:18px;
+    background:linear-gradient(180deg,#fbfdff 0%, #f6f9fd 100%);
+  }
+  .subTitle{
+    margin:0 0 12px;
+    font-size:15px;
+    font-weight:900;
+    color:#5e7489;
+  }
+
+  .realEyeStage{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:280px;
+  }
+  .realEyeWrap{
+    position:relative;
+    width:240px;
+    height:240px;
+    display:grid;
+    place-items:center;
+  }
+  .realEye{
+    position:relative;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    overflow:hidden;
+    border:1px solid #d2ddee;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.14) 0 18%, rgba(255,255,255,0) 19%),
+      radial-gradient(circle at 48% 44%, #e0ebff 0%, #bad2f4 28%, #92b6e2 48%, #7198d0 64%, #5578b3 82%, #415b8d 100%);
+    box-shadow:
+      inset 0 0 22px rgba(255,255,255,.45),
+      inset 0 0 0 8px rgba(255,255,255,.10),
+      0 12px 28px rgba(29,57,90,.14);
+  }
+  .realEye::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-conic-gradient(
+        from 0deg,
+        rgba(255,255,255,.24) 0deg 2deg,
+        rgba(30,70,120,.10) 2deg 8deg,
+        rgba(255,255,255,.04) 8deg 12deg
+      );
+    mix-blend-mode:screen;
+    opacity:.72;
+    border-radius:50%;
+  }
+  .realEye::after{
+    content:"";
+    position:absolute; inset:10px;
+    border-radius:50%;
+    box-shadow:inset 0 0 24px rgba(255,255,255,.34);
+  }
+  .realPupil{
+    position:absolute;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:78px; height:78px;
+    border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #0b1320 0%, #05090f 72%, #000 100%);
+    box-shadow:
+      0 0 0 8px rgba(20,36,61,.16),
+      inset 0 0 8px rgba(255,255,255,.06);
+    transition:width .35s ease,height .35s ease;
+    z-index:3;
+  }
+  .realOverlay{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:4;
+  }
+  .realSpec{
+    margin-top:10px;
+    text-align:center;
+    font-size:13px;
+    font-weight:800;
+    color:#61788e;
+  }
+
+  .opticStage{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:360px;
+  }
+  .opticWrap{
+    width:420px;height:420px;
+    display:grid;place-items:center;
+  }
+  .opticWrap img{
+    width:100%;height:100%;object-fit:contain;
+    filter:drop-shadow(0 18px 34px rgba(0,94,184,.10));
+  }
+
   .lensLegend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:4px}
   .legendItem{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:#597087}
   .legendDot{width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
@@ -92,7 +196,7 @@
     border:1px solid rgba(201,176,40,.6);
   }
 
-  .toggleMini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+  .toggleMini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-top:14px}
   .miniBtn{border:1px solid var(--line);background:#fff;border-radius:14px;padding:11px 10px;font-weight:900;color:var(--text);cursor:pointer;text-align:center;white-space:nowrap}
   .miniBtn.active{background:#eef4ff;border-color:#b7cff4;color:var(--acuvue-blue)}
 
@@ -152,6 +256,7 @@
     .pupilWrap{grid-template-columns:1fr}
     .eyeStage{order:1}
     .spec{order:2}
+    .simLayout{grid-template-columns:1fr}
   }
   @media (max-width:560px){
     body{padding:14px 12px 40px}
@@ -164,7 +269,9 @@
     .guide{font-size:13px;line-height:1.52}
     .eye{width:190px;height:190px}
     .label,.value{font-size:16px}
-    .lensImageWrap{width:300px;height:300px}
+    .realEyeWrap{width:210px;height:210px}
+    .realEye{width:190px;height:190px}
+    .opticWrap{width:300px;height:300px}
     .compareRow{grid-template-columns:1fr}
     .legendItem{font-size:12px}
   }
@@ -234,25 +341,42 @@
           </div>
         </div>
       </div>
-      <div class="lensWrap">
-        <div class="lensStage">
-          <div class="lensFrame">
-            <div class="lensImageWrap">
-              <img class="lensImage" id="lensImage" alt="광학부 이미지" src="">
+
+      <div class="simLayout">
+        <div class="realEyeCard">
+          <div class="subTitle">실제 동공 변화 + 렌즈 오버레이</div>
+          <div class="realEyeStage">
+            <div class="realEyeWrap">
+              <div class="realEye">
+                <div class="realPupil" id="realPupil"></div>
+              </div>
+              <img class="realOverlay" id="realOverlay" alt="렌즈 오버레이" src="">
             </div>
           </div>
+          <div class="realSpec">실사 느낌 눈 위에 렌즈 광학부와 동공 관계를 함께 표시합니다.</div>
         </div>
-        <div class="lensLegend">
-          <div class="legendItem"><span class="legendDot" style="background:#4b8fe2"></span>원거리 영역</div>
-          <div class="legendItem"><span class="legendDot" style="background:#9fce78"></span>중간거리 영역</div>
-          <div class="legendItem"><span class="legendDot" style="background:#ea8a5a"></span>근거리 영역</div>
-          <div class="legendItem"><span class="legendGap"></span>흐림 발생 구간</div>
-          <div class="legendItem"><span class="legendPupil"></span>예측 동공 사이즈</div>
-        </div>
-        <div class="toggleMini">
-          <button class="miniBtn active" id="showBothBtn" type="button">동공+광학부</button>
-          <button class="miniBtn" id="showPupilBtn" type="button">동공</button>
-          <button class="miniBtn" id="showOpticBtn" type="button">렌즈 광학부</button>
+
+        <div class="opticCard">
+          <div class="subTitle">광학부 구조</div>
+          <div class="opticStage">
+            <div class="opticWrap">
+              <img id="lensImage" alt="광학부 이미지" src="">
+            </div>
+          </div>
+
+          <div class="lensLegend">
+            <div class="legendItem"><span class="legendDot" style="background:#4b8fe2"></span>원거리 영역</div>
+            <div class="legendItem"><span class="legendDot" style="background:#9fce78"></span>중간거리 영역</div>
+            <div class="legendItem"><span class="legendDot" style="background:#ea8a5a"></span>근거리 영역</div>
+            <div class="legendItem"><span class="legendGap"></span>흐림 발생 구간</div>
+            <div class="legendItem"><span class="legendPupil"></span>예측 동공 사이즈</div>
+          </div>
+
+          <div class="toggleMini">
+            <button class="miniBtn active" id="showBothBtn" type="button">동공+광학부</button>
+            <button class="miniBtn" id="showPupilBtn" type="button">동공</button>
+            <button class="miniBtn" id="showOpticBtn" type="button">렌즈 광학부</button>
+          </div>
         </div>
       </div>
     </section>
@@ -323,11 +447,13 @@
   const addValue = document.getElementById('addValue');
   const designRadios = document.querySelectorAll('input[name="design"]');
   const pupilEl = document.getElementById('pupil');
+  const realPupil = document.getElementById('realPupil');
   const pupilText = document.getElementById('pupilText');
   const showBothBtn = document.getElementById('showBothBtn');
   const showPupilBtn = document.getElementById('showPupilBtn');
   const showOpticBtn = document.getElementById('showOpticBtn');
   const lensImage = document.getElementById('lensImage');
+  const realOverlay = document.getElementById('realOverlay');
 
   const screen = document.getElementById('screen');
   const cam = document.getElementById('cam');
@@ -366,6 +492,13 @@
     return Math.round(minPX + (maxPX-minPX)*t);
   }
 
+  function mmToRealPupilPx(mm) {
+    const minMM = 2.6, maxMM = 6.6;
+    const minPX = 38, maxPX = 122;
+    const t = Math.max(0, Math.min(1, (mm - minMM)/(maxMM-minMM)));
+    return Math.round(minPX + (maxPX-minPX)*t);
+  }
+
   function mmToLensPx(mm) {
     const minMM = 2.6, maxMM = 6.6;
     const minPX = 76, maxPX = 192;
@@ -380,7 +513,7 @@
 
   function makeLensSvg(pupilMM, ozMM, overlayModeValue) {
     const pupilR = Math.round(mmToLensPx(pupilMM) / 2);
-    const farR = Math.round(mmToLensPx(ozMM) / 2); // 광학부 외곽 = 파란색 끝
+    const farR = Math.round(mmToLensPx(ozMM) / 2);
     const midR = Math.round(farR * 0.72);
     const nearR = Math.round(farR * 0.43);
 
@@ -390,6 +523,7 @@
 
     const innerGapR = Math.min(pupilR, farR);
     const outerGapR = Math.max(pupilR, farR);
+    const blueEdgeInnerR = Math.max(midR, farR - 10);
 
     const labelYFar = 210 - farR + 30;
     const labelYMid = 210 - midR + 24;
@@ -413,10 +547,21 @@
     <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="10"/>
     </filter>
+
+    <mask id="gapRingMask">
+      <rect width="420" height="420" fill="black"/>
+      ${showGap ? `<circle cx="210" cy="210" r="${outerGapR}" fill="white"/>` : ``}
+      ${showGap ? `<circle cx="210" cy="210" r="${innerGapR}" fill="black"/>` : ``}
+    </mask>
+
+    <mask id="blueEdgeMask">
+      <rect width="420" height="420" fill="black"/>
+      ${showGap && farR > pupilR ? `<circle cx="210" cy="210" r="${farR}" fill="white"/>` : ``}
+      ${showGap && farR > pupilR ? `<circle cx="210" cy="210" r="${blueEdgeInnerR}" fill="black"/>` : ``}
+    </mask>
   </defs>
 
   <rect width="420" height="420" fill="url(#bg)"/>
-
   <circle cx="210" cy="210" r="170" fill="url(#lensBody)" stroke="#cddbef" stroke-width="1.8"/>
 
   <g opacity="0.75">
@@ -428,8 +573,8 @@
   ${showOptic ? `<circle cx="210" cy="210" r="${midR}" fill="#add486"/>` : ''}
   ${showOptic ? `<circle cx="210" cy="210" r="${nearR}" fill="#eb9a67"/>` : ''}
 
-  ${showGap ? `<circle cx="210" cy="210" r="${outerGapR}" fill="rgba(255,233,102,0.48)"/>` : ''}
-  ${showGap ? `<circle cx="210" cy="210" r="${innerGapR}" fill="white" fill-opacity="0"/>` : ''}
+  ${showGap ? `<circle cx="210" cy="210" r="${outerGapR}" fill="rgba(255,233,102,0.38)" mask="url(#gapRingMask)"/>` : ''}
+  ${showGap && farR > pupilR && showOptic ? `<circle cx="210" cy="210" r="${farR}" fill="#6f9ee4" mask="url(#blueEdgeMask)"/>` : ''}
 
   ${showOptic ? `<circle cx="210" cy="210" r="${farR}" fill="none" stroke="#ffffff" stroke-opacity="0.88" stroke-width="2.8"/>` : ''}
   ${showOptic ? `<circle cx="210" cy="210" r="${midR}" fill="none" stroke="#ffffff" stroke-opacity="0.82" stroke-width="2.4"/>` : ''}
@@ -440,6 +585,56 @@
   ${showOptic ? `<text x="210" y="${labelYFar}" text-anchor="middle" font-size="24" font-weight="700" fill="#3a77d6" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">원</text>` : ''}
   ${showOptic ? `<text x="210" y="${labelYMid}" text-anchor="middle" font-size="24" font-weight="700" fill="#7ca95c" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">중</text>` : ''}
   ${showOptic ? `<text x="210" y="${labelYNear}" text-anchor="middle" font-size="24" font-weight="700" fill="#d07752" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">근</text>` : ''}
+</svg>
+    `.trim();
+
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
+
+  function makeRealEyeOverlaySvg(pupilMM, ozMM, overlayModeValue) {
+    const pupilR = Math.round(mmToRealPupilPx(pupilMM) / 2);
+    const farR = Math.round((mmToRealPupilPx(ozMM) / 2) * 1.12);
+    const midR = Math.round(farR * 0.72);
+    const nearR = Math.round(farR * 0.43);
+
+    const showPupil = overlayModeValue === 'both' || overlayModeValue === 'pupil';
+    const showOptic = overlayModeValue === 'both' || overlayModeValue === 'optic';
+    const showGap = overlayModeValue === 'both' && Math.abs(pupilR - farR) >= 4;
+
+    const innerGapR = Math.min(pupilR, farR);
+    const outerGapR = Math.max(pupilR, farR);
+    const blueEdgeInnerR = Math.max(midR, farR - 8);
+
+    const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <defs>
+    <mask id="gapRingMaskReal">
+      <rect width="240" height="240" fill="black"/>
+      ${showGap ? `<circle cx="120" cy="120" r="${outerGapR}" fill="white"/>` : ``}
+      ${showGap ? `<circle cx="120" cy="120" r="${innerGapR}" fill="black"/>` : ``}
+    </mask>
+
+    <mask id="blueEdgeMaskReal">
+      <rect width="240" height="240" fill="black"/>
+      ${showGap && farR > pupilR ? `<circle cx="120" cy="120" r="${farR}" fill="white"/>` : ``}
+      ${showGap && farR > pupilR ? `<circle cx="120" cy="120" r="${blueEdgeInnerR}" fill="black"/>` : ``}
+    </mask>
+  </defs>
+
+  <circle cx="120" cy="120" r="108" fill="none" stroke="rgba(205,219,239,.95)" stroke-width="1.6"/>
+
+  ${showOptic ? `<circle cx="120" cy="120" r="${farR}" fill="rgba(111,158,228,0.22)"/>` : ''}
+  ${showOptic ? `<circle cx="120" cy="120" r="${midR}" fill="rgba(159,206,120,0.20)"/>` : ''}
+  ${showOptic ? `<circle cx="120" cy="120" r="${nearR}" fill="rgba(234,138,90,0.18)"/>` : ''}
+
+  ${showGap ? `<circle cx="120" cy="120" r="${outerGapR}" fill="rgba(255,233,102,0.30)" mask="url(#gapRingMaskReal)"/>` : ''}
+  ${showGap && farR > pupilR && showOptic ? `<circle cx="120" cy="120" r="${farR}" fill="rgba(111,158,228,0.20)" mask="url(#blueEdgeMaskReal)"/>` : ''}
+
+  ${showOptic ? `<circle cx="120" cy="120" r="${farR}" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.0"/>` : ''}
+  ${showOptic ? `<circle cx="120" cy="120" r="${midR}" fill="none" stroke="rgba(255,255,255,0.78)" stroke-width="1.8"/>` : ''}
+  ${showOptic ? `<circle cx="120" cy="120" r="${nearR}" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="1.8"/>` : ''}
+
+  ${showPupil ? `<circle cx="120" cy="120" r="${pupilR}" fill="none" stroke="rgba(33,56,79,0.92)" stroke-width="2.4" stroke-dasharray="8 8" stroke-linecap="round"/>` : ''}
 </svg>
     `.trim();
 
@@ -495,15 +690,23 @@
     const mode = getDesignMode();
     const pupilMM = calcPupilMM();
     const pupilPX = mmToEyePupilPx(pupilMM);
+    const realPupilPX = mmToRealPupilPx(pupilMM);
 
     sphereValue.textContent = formatSphere(getSphereValue());
     addValue.textContent = formatAdd(getAddIndex());
+
     pupilEl.style.width = `${pupilPX}px`;
     pupilEl.style.height = `${pupilPX}px`;
+
+    realPupil.style.width = `${realPupilPX}px`;
+    realPupil.style.height = `${realPupilPX}px`;
+
     pupilText.textContent = `${pupilMM.toFixed(1)} mm`;
 
     const ozMM = calcOpticZoneMM(mode, pupilMM);
+
     lensImage.src = makeLensSvg(pupilMM, ozMM, overlayMode);
+    realOverlay.src = makeRealEyeOverlaySvg(pupilMM, ozMM, overlayMode);
 
     showBothBtn.classList.toggle('active', overlayMode === 'both');
     showPupilBtn.classList.toggle('active', overlayMode === 'pupil');
