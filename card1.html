@@ -25,7 +25,7 @@
     padding:28px 18px 60px;
   }
   .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-  .hero,.card,.visionCard,.compareCard,.placeholderCard,.pageFootnote{
+  .hero,.card,.visionCard,.compareCard,.placeholderCard,.pageFootnote,.accordionCard{
     width:100%;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);
   }
   .hero{padding:22px 24px;overflow:hidden;position:relative}
@@ -122,27 +122,54 @@
   .compareBox{border-radius:18px;padding:16px;border:1px solid #e0e8f3;background:#fbfdff}
   .compareBox.good{background:linear-gradient(180deg,#f3f9ff 0%, #fbfdff 100%);border-color:#cfe1f8}
   .compareBox .title{font-size:15px;font-weight:900;margin-bottom:8px}
-  .compareBox.bad .title{color:#4f6276} .compareBox.good .title{color:var(--acuvue-blue)}
+  .compareBox.bad .title{color:#4f6276}
+  .compareBox.good .title{color:var(--acuvue-blue)}
   .compareBox ul{padding-left:18px;margin:0;color:#61788e;font-size:14px;line-height:1.6}
+
+  .accordionCard{padding:0;overflow:hidden}
+  .accordionSummary{
+    list-style:none;
+    cursor:pointer;
+    padding:22px 24px;
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:-.03em;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .accordionSummary::-webkit-details-marker{display:none}
+  .accordionSummary::after{
+    content:"⌄";
+    font-size:22px;
+    color:#6c8297;
+    transition:transform .2s ease;
+  }
+  .accordionCard[open] .accordionSummary::after{transform:rotate(180deg)}
+  .accordionBody{padding:0 24px 22px}
+
   .placeholderBox{margin-top:16px;border-radius:20px;min-height:220px;border:1.5px dashed #b8cbe3;background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.2) 18%, rgba(255,255,255,0) 30%), linear-gradient(180deg,#eef5ff 0%, #f8fbff 100%);display:grid;place-items:center;text-align:center;padding:20px;color:#6c8297;font-size:15px;line-height:1.7}
   .pageFootnote{padding:12px 16px;color:var(--sub);font-weight:800;font-size:13px;line-height:1.5;box-shadow:none}
 
   @media (max-width:980px){
     .grid,.visionGrid,.sideGrid{grid-template-columns:1fr}
     .pupilWrap{grid-template-columns:1fr}
-    .eyeStage{order:1} .spec{order:2}
+    .eyeStage{order:1}
+    .spec{order:2}
   }
   @media (max-width:560px){
     body{padding:14px 12px 40px}
-    .hero,.card,.visionCard,.compareCard,.placeholderCard{border-radius:22px}
+    .hero,.card,.visionCard,.compareCard,.placeholderCard,.accordionCard{border-radius:22px}
     .card,.visionCard,.compareCard,.placeholderCard,.hero{padding:18px}
+    .accordionSummary{padding:18px;font-size:18px}
+    .accordionBody{padding:0 18px 18px}
     .heroTitle{font-size:clamp(15px,5.6vw,19px);max-width:100%;line-height:1.34}
     .card h3,.visionCard h3,.compareCard h3,.placeholderCard h3{font-size:18px}
     .guide{font-size:13px;line-height:1.52}
     .eye{width:190px;height:190px}
     .label,.value{font-size:16px}
     .lensImageWrap{width:300px;height:300px}
-    .toggleMini,.compareRow{grid-template-columns:1fr}
+    .compareRow{grid-template-columns:1fr}
     .legendItem{font-size:12px}
   }
 </style>
@@ -223,7 +250,7 @@
         </div>
         <div class="lensLegend">
           <div class="legendItem"><span class="legendDot" style="background:#4b8fe2"></span>원거리 영역</div>
-          <div class="legendItem"><span class="legendDot" style="background:#f1c84a"></span>중간거리 영역</div>
+          <div class="legendItem"><span class="legendDot" style="background:#9fce78"></span>중간거리 영역</div>
           <div class="legendItem"><span class="legendDot" style="background:#ea8a5a"></span>근거리 영역</div>
           <div class="legendItem"><span class="legendPupil"></span>예측 동공 사이즈</div>
         </div>
@@ -264,28 +291,30 @@
   </section>
 
   <div class="sideGrid">
-    <section class="compareCard">
-      <h3>왜 183가지 디자인인가?</h3>
-      <p class="guide" style="margin-bottom:0">고정된 1~2개 광학부 디자인으로는 모든 케이스를 충분히 만족시키기 어렵습니다. ACUVUE는 보다 다양한 동공 조건에 맞춰 광학부를 정교하게 최적화합니다.</p>
-      <div class="compareRow">
-        <div class="compareBox bad">
-          <div class="title">고정된 소수 광학부</div>
-          <ul>
-            <li>동공이 작거나 큰 소비자에서 한계 가능</li>
-            <li>소비자별 시야 니즈 반영 폭 제한</li>
-            <li>모든 굴절도수·가입도 조합 대응 어려움</li>
-          </ul>
-        </div>
-        <div class="compareBox good">
-          <div class="title">ACUVUE 183 Pupil Optimized</div>
-          <ul>
-            <li>원용도수와 가입도에 따른 동공 특성 반영</li>
-            <li>소비자별 optical design 정교화</li>
-            <li>보다 개인화된 멀티포컬 경험 지원</li>
-          </ul>
+    <details class="accordionCard">
+      <summary class="accordionSummary">왜 183가지 디자인인가?</summary>
+      <div class="accordionBody">
+        <p class="guide" style="margin-bottom:0">고정된 1~2개 광학부 디자인으로는 모든 케이스를 충분히 만족시키기 어렵습니다. ACUVUE는 보다 다양한 동공 조건에 맞춰 광학부를 정교하게 최적화합니다.</p>
+        <div class="compareRow">
+          <div class="compareBox bad">
+            <div class="title">고정된 소수 광학부</div>
+            <ul>
+              <li>동공이 작거나 큰 소비자에서 한계 가능</li>
+              <li>소비자별 시야 니즈 반영 폭 제한</li>
+              <li>모든 굴절도수·가입도 조합 대응 어려움</li>
+            </ul>
+          </div>
+          <div class="compareBox good">
+            <div class="title">ACUVUE 183 Pupil Optimized</div>
+            <ul>
+              <li>원용도수와 가입도에 따른 동공 특성 반영</li>
+              <li>소비자별 optical design 정교화</li>
+              <li>보다 개인화된 멀티포컬 경험 지원</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </section>
+    </details>
   </div>
 
   <div class="pageFootnote">*동공사이즈 및 이미지는 이해를 돕기 위한 가상이미지 입니다.</div>
@@ -357,21 +386,22 @@
   }
 
   function makeLensSvg(ozMM, overlayModeValue) {
-    const outerR = Math.round(mmToLensPx(ozMM) / 2);
-    const midR = Math.round(outerR * 0.73);
-    const nearR = Math.round(outerR * 0.41);
+    const opticDiameter = mmToLensPx(ozMM);
+    const outerR = Math.round(opticDiameter / 2);
+    const midR = Math.round(outerR * 0.72);
+    const nearR = Math.round(outerR * 0.43);
 
     const showOptic = overlayModeValue === 'both' || overlayModeValue === 'optic';
-    const farOpacity = showOptic ? '0.98' : '0';
-    const midOpacity = showOptic ? '0.98' : '0';
-    const nearOpacity = showOptic ? '0.98' : '0';
-    const lineOpacityOuter = showOptic ? '0.86' : '0';
+    const farOpacity = showOptic ? '1' : '0';
+    const midOpacity = showOptic ? '1' : '0';
+    const nearOpacity = showOptic ? '1' : '0';
+    const lineOpacityOuter = showOptic ? '0.88' : '0';
     const lineOpacityMid = showOptic ? '0.82' : '0';
     const lineOpacityNear = showOptic ? '0.78' : '0';
 
     const labelYFar = 210 - outerR + 30;
     const labelYMid = 210 - midR + 24;
-    const labelYNear = 210 - nearR + 26;
+    const labelYNear = 210 - nearR + 24;
 
     const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420">
@@ -388,21 +418,21 @@
       <stop offset="100%" stop-color="#dde8f6" stop-opacity="1"/>
     </radialGradient>
 
-    <radialGradient id="farZone" cx="50%" cy="46%" r="60%">
+    <radialGradient id="farZone" cx="50%" cy="46%" r="64%">
       <stop offset="0%" stop-color="#8fb6ef"/>
-      <stop offset="70%" stop-color="#6f9ee4"/>
+      <stop offset="62%" stop-color="#6f9ee4"/>
       <stop offset="100%" stop-color="#5d89d6"/>
     </radialGradient>
 
-    <radialGradient id="midZone" cx="50%" cy="50%" r="56%">
-      <stop offset="0%" stop-color="#d8e58b"/>
-      <stop offset="62%" stop-color="#b8d28c"/>
+    <radialGradient id="midZone" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#c7e4a7"/>
+      <stop offset="58%" stop-color="#add486"/>
       <stop offset="100%" stop-color="#95bf83"/>
     </radialGradient>
 
-    <radialGradient id="nearZone" cx="50%" cy="52%" r="56%">
+    <radialGradient id="nearZone" cx="50%" cy="52%" r="58%">
       <stop offset="0%" stop-color="#e47d67"/>
-      <stop offset="48%" stop-color="#efa26a"/>
+      <stop offset="55%" stop-color="#eb9a67"/>
       <stop offset="100%" stop-color="#f1c84a"/>
     </radialGradient>
 
@@ -423,14 +453,14 @@
   <circle cx="210" cy="210" r="${midR}" fill="url(#midZone)" opacity="${midOpacity}"/>
   <circle cx="210" cy="210" r="${nearR}" fill="url(#nearZone)" opacity="${nearOpacity}"/>
 
-  <circle cx="210" cy="210" r="${outerR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityOuter}" stroke-width="2.6"/>
+  <circle cx="210" cy="210" r="${outerR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityOuter}" stroke-width="2.8"/>
   <circle cx="210" cy="210" r="${midR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityMid}" stroke-width="2.4"/>
   <circle cx="210" cy="210" r="${nearR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityNear}" stroke-width="2.4"/>
 
   <circle cx="210" cy="210" r="168" fill="none" stroke="#cddbef" stroke-width="1.4"/>
 
   ${showOptic ? `<text x="210" y="${labelYFar}" text-anchor="middle" font-size="24" font-weight="700" fill="#3a77d6" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">원</text>` : ''}
-  ${showOptic ? `<text x="210" y="${labelYMid}" text-anchor="middle" font-size="24" font-weight="700" fill="#aa9729" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">중</text>` : ''}
+  ${showOptic ? `<text x="210" y="${labelYMid}" text-anchor="middle" font-size="24" font-weight="700" fill="#7ca95c" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">중</text>` : ''}
   ${showOptic ? `<text x="210" y="${labelYNear}" text-anchor="middle" font-size="24" font-weight="700" fill="#d07752" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">근</text>` : ''}
 </svg>
     `.trim();
