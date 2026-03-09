@@ -25,7 +25,7 @@
     padding:28px 18px 60px;
   }
   .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-  .hero,.card,.visionCard,.pageFootnote,.accordionCard{
+  .hero,.card,.visionCard,.placeholderCard,.pageFootnote,.accordionCard{
     width:100%;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);
   }
   .hero{padding:22px 24px;overflow:hidden;position:relative}
@@ -50,7 +50,7 @@
 
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   .card{padding:22px}
-  .card h3,.visionCard h3{
+  .card h3,.visionCard h3,.placeholderCard h3{
     margin:0 0 12px;font-size:22px;letter-spacing:-.03em;line-height:1.3;
   }
   .guide{margin:0 0 18px;color:var(--sub);font-size:15px;font-weight:700;line-height:1.62}
@@ -157,12 +157,12 @@
   }
   @media (max-width:560px){
     body{padding:14px 12px 40px}
-    .hero,.card,.visionCard,.accordionCard{border-radius:22px}
-    .card,.visionCard,.hero{padding:18px}
+    .hero,.card,.visionCard,.placeholderCard,.accordionCard{border-radius:22px}
+    .card,.visionCard,.placeholderCard,.hero{padding:18px}
     .accordionSummary{padding:18px;font-size:18px}
     .accordionBody{padding:0 18px 18px}
     .heroTitle{font-size:clamp(15px,5.6vw,19px);max-width:100%;line-height:1.34}
-    .card h3,.visionCard h3{font-size:18px}
+    .card h3,.visionCard h3,.placeholderCard h3{font-size:18px}
     .guide{font-size:13px;line-height:1.52}
     .eye{width:190px;height:190px}
     .label,.value{font-size:16px}
@@ -384,10 +384,13 @@
   }
 
   function makeLensSvg(ozMM, overlayModeValue) {
-    const opticDiameterPx = mmToLensPx(ozMM);
-    const farR = Math.round(opticDiameterPx / 2);   // 광학부 전체 외곽 = 파란색 끝
-    const midR = Math.round(farR * 0.72);
-    const nearR = Math.round(farR * 0.43);
+    const opticDiameter = mmToLensPx(ozMM);
+    const opticOuterR = Math.round(opticDiameter / 2);
+
+    // 광학부 전체(원+중+근)의 바깥 끝 = 파란색 끝 = opticOuterR
+    const farR = opticOuterR;
+    const midR = Math.round(opticOuterR * 0.72);
+    const nearR = Math.round(opticOuterR * 0.43);
 
     const showOptic = overlayModeValue === 'both' || overlayModeValue === 'optic';
     const farOpacity = showOptic ? '1' : '0';
@@ -410,25 +413,52 @@
       <stop offset="100%" stop-color="#eef4fb" stop-opacity="0.88"/>
     </radialGradient>
 
+    <radialGradient id="outerLens" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="58%" stop-color="#f4f8fd" stop-opacity="0.76"/>
+      <stop offset="100%" stop-color="#dde8f6" stop-opacity="1"/>
+    </radialGradient>
+
+    <radialGradient id="farZone" cx="50%" cy="46%" r="64%">
+      <stop offset="0%" stop-color="#8fb6ef"/>
+      <stop offset="62%" stop-color="#6f9ee4"/>
+      <stop offset="100%" stop-color="#5d89d6"/>
+    </radialGradient>
+
+    <radialGradient id="midZone" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#c7e4a7"/>
+      <stop offset="58%" stop-color="#add486"/>
+      <stop offset="100%" stop-color="#95bf83"/>
+    </radialGradient>
+
+    <radialGradient id="nearZone" cx="50%" cy="52%" r="58%">
+      <stop offset="0%" stop-color="#e47d67"/>
+      <stop offset="55%" stop-color="#eb9a67"/>
+      <stop offset="100%" stop-color="#f1c84a"/>
+    </radialGradient>
+
     <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="10"/>
     </filter>
   </defs>
 
   <rect width="420" height="420" fill="url(#bg)"/>
+  <circle cx="210" cy="210" r="170" fill="url(#outerLens)" stroke="#d9e4f2" stroke-width="2"/>
 
   <g opacity="0.9">
-    <path d="M210 38 C220 78 230 118 210 162 C190 118 200 78 210 38Z" fill="#ffffff" fill-opacity="0.42" filter="url(#softGlow)"/>
-    <path d="M196 52 C202 92 208 126 196 162 C184 124 188 92 196 52Z" fill="#ffffff" fill-opacity="0.22" filter="url(#softGlow)"/>
+    <path d="M210 38 C220 78 230 118 210 162 C190 118 200 78 210 38Z" fill="#ffffff" fill-opacity="0.72" filter="url(#softGlow)"/>
+    <path d="M196 52 C202 92 208 126 196 162 C184 124 188 92 196 52Z" fill="#ffffff" fill-opacity="0.38" filter="url(#softGlow)"/>
   </g>
 
-  ${showOptic ? `<circle cx="210" cy="210" r="${farR}" fill="#6f9ee4" opacity="${farOpacity}"/>` : ''}
-  ${showOptic ? `<circle cx="210" cy="210" r="${midR}" fill="#add486" opacity="${midOpacity}"/>` : ''}
-  ${showOptic ? `<circle cx="210" cy="210" r="${nearR}" fill="#eb9a67" opacity="${nearOpacity}"/>` : ''}
+  <circle cx="210" cy="210" r="${farR}" fill="url(#farZone)" opacity="${farOpacity}"/>
+  <circle cx="210" cy="210" r="${midR}" fill="url(#midZone)" opacity="${midOpacity}"/>
+  <circle cx="210" cy="210" r="${nearR}" fill="url(#nearZone)" opacity="${nearOpacity}"/>
 
-  ${showOptic ? `<circle cx="210" cy="210" r="${farR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityOuter}" stroke-width="2.8"/>` : ''}
-  ${showOptic ? `<circle cx="210" cy="210" r="${midR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityMid}" stroke-width="2.4"/>` : ''}
-  ${showOptic ? `<circle cx="210" cy="210" r="${nearR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityNear}" stroke-width="2.4"/>` : ''}
+  <circle cx="210" cy="210" r="${farR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityOuter}" stroke-width="2.8"/>
+  <circle cx="210" cy="210" r="${midR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityMid}" stroke-width="2.4"/>
+  <circle cx="210" cy="210" r="${nearR}" fill="none" stroke="#ffffff" stroke-opacity="${lineOpacityNear}" stroke-width="2.4"/>
+
+  <circle cx="210" cy="210" r="168" fill="none" stroke="#cddbef" stroke-width="1.4"/>
 
   ${showOptic ? `<text x="210" y="${labelYFar}" text-anchor="middle" font-size="24" font-weight="700" fill="#3a77d6" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">원</text>` : ''}
   ${showOptic ? `<text x="210" y="${labelYMid}" text-anchor="middle" font-size="24" font-weight="700" fill="#7ca95c" font-family="Apple SD Gothic Neo, Pretendard, Arial, sans-serif">중</text>` : ''}
@@ -571,6 +601,7 @@
       alert('카메라 권한을 허용하면 실시간 시뮬레이션을 볼 수 있습니다.');
     }
   }
+
   function stopCamera() {
     if(!stream) return;
     stream.getTracks().forEach(t => t.stop());
